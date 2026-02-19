@@ -2,7 +2,7 @@
 layout: home
 permalink: index.html
 
-repository-name: e21-3yp-Smart-Dog-Collar
+repository-name: e21-3yp-PetGuard-Pro
 title: PetGuard Pro
 ---
 
