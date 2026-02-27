@@ -9,6 +9,9 @@ import 'features/auth/screens/login_screen.dart';
 import 'features/owner/location/services/notification_service.dart';
 import 'features/owner/location/services/location_history_service.dart';
 import 'features/owner/location/services/cloud_service.dart';
+import 'features/owner/health/screens/health_dashboard_screen.dart';
+import 'core/constants/routes.dart';
+import 'features/owner/health/services/health_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,6 +45,12 @@ void main() async {
     debugPrint('Cloud service initialization error: $e');
   }
 
+  try {
+  await HealthService().initialize();
+  } catch (e) {
+  debugPrint('Health service initialization error: $e');
+  }
+
   runApp(
     const ProviderScope(
       // Wrap with Riverpod
@@ -63,7 +72,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: const LoadingScreen(),
       routes: {
-        '/login': (context) => const LoginScreen(),
+        Routes.login: (context) => const LoginScreen(),
+        Routes.healthDashboard: (context) =>
+        const HealthDashboardScreen(),
       },
     );
   }

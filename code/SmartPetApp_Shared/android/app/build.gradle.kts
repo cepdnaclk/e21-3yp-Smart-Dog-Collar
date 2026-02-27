@@ -34,7 +34,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.smart_pet_app"
-        minSdk = 23 // Updated minSdkVersion to 23
+        minSdk = flutter.minSdkVersion // Updated minSdkVersion to 23
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName

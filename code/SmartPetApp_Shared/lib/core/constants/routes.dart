@@ -3,4 +3,5 @@ class Routes {
   static const String login = '/login';
   static const String adminDashboard = '/admin-dashboard';
   static const String userDashboard = '/user-dashboard';
+  static const String healthDashboard = '/health-dashboard';
 }

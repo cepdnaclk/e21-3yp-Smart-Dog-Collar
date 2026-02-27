@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../location/screens/dashboard_screen.dart' show LocationDashboard;
+import '../health/screens/health_dashboard_screen.dart';
 
 // Replace this with your actual login screen import
 import '../../auth/screens/login_screen.dart';
@@ -328,7 +329,7 @@ class UserHomeTab extends StatelessWidget {
         "subtitle": "Pet health stats",
         "value": "92%",
         "icon": Icons.favorite,
-        "route": null,
+        "route": "health",
       },
       {
         "title": "Collar Status",
@@ -367,19 +368,29 @@ class UserHomeTab extends StatelessWidget {
             );
 
             // Wrap with InkWell if it has a route
-            if (s["route"] == "gps") {
-              return InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const LocationDashboard(),
-                    ),
-                  );
-                },
-                child: card,
-              );
-            }
+            if (s["route"] != null) {
+  return InkWell(
+    onTap: () {
+      if (s["route"] == "gps") {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const LocationDashboard(),
+          ),
+        );
+      } 
+      else if (s["route"] == "health") {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const HealthDashboardScreen(),
+          ),
+        );
+      }
+    },
+    child: card,
+  );
+}
 
             return card;
           }).toList(),
