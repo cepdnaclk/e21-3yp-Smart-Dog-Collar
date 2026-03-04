@@ -4,4 +4,5 @@ class Routes {
   static const String adminDashboard = '/admin-dashboard';
   static const String userDashboard = '/user-dashboard';
   static const String healthDashboard = '/health-dashboard';
+  static const String activityDashboard = '/activity-dashboard';
 }

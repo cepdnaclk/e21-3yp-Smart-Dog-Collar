@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../location/screens/dashboard_screen.dart' show LocationDashboard;
 import '../health/screens/health_dashboard_screen.dart';
+import '../activity/screens/activity_dashboard_screen.dart';
 
 // Replace this with your actual login screen import
 import '../../auth/screens/login_screen.dart';
@@ -343,7 +344,7 @@ class UserHomeTab extends StatelessWidget {
         "subtitle": "Track daily pet activity",
         "value": "Normal",
         "icon": Icons.directions_run,
-        "route": null,
+        "route": "activity",
       },
     ];
 
@@ -384,6 +385,14 @@ class UserHomeTab extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => const HealthDashboardScreen(),
+          ),
+        );
+      }
+      else if (s["route"] == "activity") {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const ActivityDashboardScreen(),
           ),
         );
       }
