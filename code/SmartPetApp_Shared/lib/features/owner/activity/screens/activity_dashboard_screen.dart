@@ -84,7 +84,9 @@ class _LiveTab extends ConsumerWidget {
         child: activityAsync.when(
           data: (activity) {
             if (activity == null) {
-              return const _NoDataCard(message: 'No live activity data yet.\nData will appear once the sensor is connected.');
+              return const _NoDataCard(
+                message: 'No live activity data yet.\nData will appear once the sensor is connected.',
+              );
             }
             return Column(
               children: [
@@ -99,20 +101,36 @@ class _LiveTab extends ConsumerWidget {
               ],
             );
           },
-          loading: () => const Center(
-              child: Padding(
-            padding: EdgeInsets.only(top: 80),
-            child: CircularProgressIndicator(color: _primary),
-          )),
+          loading: () => Center(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 80),
+              child: Column(
+                children: [
+                  const CircularProgressIndicator(color: _primary),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Connecting to sensor...',
+                    style: TextStyle(color: Colors.grey, fontSize: 13),
+                  ),
+                  const SizedBox(height: 16),
+                  TextButton(
+                    onPressed: () => ref.invalidate(currentActivityProvider),
+                    child: const Text('Tap to retry',
+                        style: TextStyle(color: _primary)),
+                  ),
+                ],
+              ),
+            ),
+          ),
           error: (e, _) => _ErrorCard(error: e),
         ),
       ),
     );
   }
-}
+} // ← _LiveTab closes here
 
 // ─────────────────────────────────────────────────────────────────────────────
-// FRIENDLY PET WELLNESS CARD (replaces raw IMU data card)
+// FRIENDLY PET WELLNESS CARD
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _PetWellnessCard extends StatelessWidget {
@@ -121,7 +139,6 @@ class _PetWellnessCard extends StatelessWidget {
 
   static const Color _primary = Color.fromARGB(255, 0, 150, 136);
 
-  // Translate magnitude into a human-readable movement intensity
   String _movementIntensity(double magnitude) {
     if (magnitude > 20) return 'Very High';
     if (magnitude > 13) return 'High';
@@ -138,7 +155,6 @@ class _PetWellnessCard extends StatelessWidget {
     return Colors.purple;
   }
 
-  // Translate gyroscope magnitude into body stability
   String _bodyStability(double gx, double gy, double gz) {
     final gyroMag = (gx * gx + gy * gy + gz * gz);
     if (gyroMag > 2.0) return 'Spinning / Shaking';
@@ -155,7 +171,6 @@ class _PetWellnessCard extends StatelessWidget {
     return Icons.spa;
   }
 
-  // Posture based on Y-axis accelerometer (gravity direction)
   String _posture(double ay) {
     if (ay > 9.0) return 'Upright / Standing';
     if (ay > 5.0) return 'Leaning / Tilted';
@@ -168,7 +183,6 @@ class _PetWellnessCard extends StatelessWidget {
     return Icons.horizontal_rule;
   }
 
-  // Overall wellness message
   String _wellnessMessage(ActivityData a) {
     if (a.impactDetected) return 'Check on your pet — a fall or bump was detected!';
     switch (a.activityType) {
@@ -200,7 +214,6 @@ class _PetWellnessCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header
             const Row(
               children: [
                 Icon(Icons.favorite, color: Color.fromARGB(255, 0, 150, 136)),
@@ -209,8 +222,6 @@ class _PetWellnessCard extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
               ],
             ),
-
-            // Wellness message
             const SizedBox(height: 12),
             Container(
               width: double.infinity,
@@ -225,13 +236,9 @@ class _PetWellnessCard extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
             ),
-
             const Divider(height: 24),
-
-            // 3 friendly metric tiles
             Row(
               children: [
-                // Movement Intensity
                 Expanded(
                   child: _WellnessTile(
                     icon: Icons.bolt,
@@ -243,7 +250,6 @@ class _PetWellnessCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 10),
-                // Body Stability
                 Expanded(
                   child: _WellnessTile(
                     icon: stabilityIcon,
@@ -256,12 +262,9 @@ class _PetWellnessCard extends StatelessWidget {
                 ),
               ],
             ),
-
             const SizedBox(height: 10),
-
             Row(
               children: [
-                // Posture
                 Expanded(
                   child: _WellnessTile(
                     icon: postureIcon,
@@ -273,7 +276,6 @@ class _PetWellnessCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 10),
-                // Safety
                 Expanded(
                   child: _WellnessTile(
                     icon: activity.impactDetected
@@ -291,10 +293,7 @@ class _PetWellnessCard extends StatelessWidget {
                 ),
               ],
             ),
-
             const Divider(height: 24),
-
-            // Movement intensity bar
             const Text('Movement Intensity',
                 style: TextStyle(
                     fontSize: 12,
@@ -317,9 +316,9 @@ class _PetWellnessCard extends StatelessWidget {
                       intensityFraction *
                       0.75,
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
+                    gradient: const LinearGradient(
                       colors: [Colors.green, Colors.orange, Colors.red],
-                      stops: const [0.0, 0.6, 1.0],
+                      stops: [0.0, 0.6, 1.0],
                     ),
                     borderRadius: BorderRadius.circular(6),
                   ),
@@ -327,14 +326,12 @@ class _PetWellnessCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 4),
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
+              children: [
                 Text('Calm', style: TextStyle(fontSize: 10, color: Colors.grey)),
-                Text('Active',
-                    style: TextStyle(fontSize: 10, color: Colors.grey)),
-                Text('Very Active',
-                    style: TextStyle(fontSize: 10, color: Colors.grey)),
+                Text('Active', style: TextStyle(fontSize: 10, color: Colors.grey)),
+                Text('Very Active', style: TextStyle(fontSize: 10, color: Colors.grey)),
               ],
             ),
           ],
@@ -401,7 +398,7 @@ class _WellnessTile extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// TAB 2: SUMMARY (BAR CHART)
+// TAB 2: SUMMARY
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _SummaryTab extends ConsumerWidget {
@@ -431,7 +428,8 @@ class _SummaryTab extends ConsumerWidget {
             summariesAsync.when(
               data: (summaries) {
                 if (summaries.isEmpty) {
-                  return const _NoDataCard(message: 'No summary data yet.\nManually add data to Firebase to see charts.');
+                  return const _NoDataCard(
+                      message: 'No summary data yet.\nManually add data to Firebase to see charts.');
                 }
                 return Column(
                   children: [
@@ -443,8 +441,8 @@ class _SummaryTab extends ConsumerWidget {
                   ],
                 );
               },
-              loading: () =>
-                  const Center(child: CircularProgressIndicator(color: _primary)),
+              loading: () => const Center(
+                  child: CircularProgressIndicator(color: _primary)),
               error: (e, _) => _ErrorCard(error: e),
             ),
             const SizedBox(height: 24),
@@ -454,7 +452,8 @@ class _SummaryTab extends ConsumerWidget {
             impactAsync.when(
               data: (impacts) {
                 if (impacts.isEmpty) {
-                  return const _NoDataCard(message: 'No impacts recorded. Your pet is safe! 🐾');
+                  return const _NoDataCard(
+                      message: 'No impacts recorded. Your pet is safe! 🐾');
                 }
                 return Column(
                   children: impacts
@@ -463,8 +462,8 @@ class _SummaryTab extends ConsumerWidget {
                       .toList(),
                 );
               },
-              loading: () =>
-                  const Center(child: CircularProgressIndicator(color: _primary)),
+              loading: () => const Center(
+                  child: CircularProgressIndicator(color: _primary)),
               error: (e, _) => _ErrorCard(error: e),
             ),
           ],
@@ -502,8 +501,8 @@ class _HistoryTab extends ConsumerWidget {
             itemBuilder: (ctx, i) => _HistoryTile(activity: history[i]),
           );
         },
-        loading: () => const Center(
-            child: CircularProgressIndicator(color: _primary)),
+        loading: () =>
+            const Center(child: CircularProgressIndicator(color: _primary)),
         error: (e, _) => Center(child: _ErrorCard(error: e)),
       ),
     );
@@ -549,7 +548,10 @@ class _ActivityStatusCard extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
-          BoxShadow(color: color.withOpacity(0.4), blurRadius: 12, offset: const Offset(0, 6))
+          BoxShadow(
+              color: color.withOpacity(0.4),
+              blurRadius: 12,
+              offset: const Offset(0, 6))
         ],
       ),
       child: Row(
@@ -634,7 +636,8 @@ class _ImpactAlertBanner extends StatelessWidget {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: isHigh ? Colors.red.shade50 : Colors.orange.shade50,
-        border: Border.all(color: isHigh ? Colors.red : Colors.orange, width: 2),
+        border:
+            Border.all(color: isHigh ? Colors.red : Colors.orange, width: 2),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
@@ -696,7 +699,8 @@ class _StepsCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _BigStat(value: '${activity.stepCount}', label: 'Steps Today'),
+                _BigStat(
+                    value: '${activity.stepCount}', label: 'Steps Today'),
                 _BigStat(
                     value: '${activity.activeMinutes.toStringAsFixed(0)} min',
                     label: 'Active Time'),
@@ -727,6 +731,7 @@ class _BigStat extends StatelessWidget {
   final String value;
   final String label;
   const _BigStat({required this.value, required this.label});
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -743,7 +748,7 @@ class _BigStat extends StatelessWidget {
   }
 }
 
-// ─── Bar Chart ────────────────────────────────────────────────────────────────
+// ─── Bar Charts ───────────────────────────────────────────────────────────────
 
 class _StepsBarChart extends StatelessWidget {
   final List<ActivitySummary> summaries;
@@ -849,11 +854,12 @@ class _Bar extends StatelessWidget {
   final String label;
   final String value;
   final Color color;
-  const _Bar(
-      {required this.heightFraction,
-      required this.label,
-      required this.value,
-      required this.color});
+  const _Bar({
+    required this.heightFraction,
+    required this.label,
+    required this.value,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -862,9 +868,7 @@ class _Bar extends StatelessWidget {
       children: [
         Text(value,
             style: TextStyle(
-                fontSize: 9,
-                color: color,
-                fontWeight: FontWeight.bold)),
+                fontSize: 9, color: color, fontWeight: FontWeight.bold)),
         const SizedBox(height: 2),
         AnimatedContainer(
           duration: const Duration(milliseconds: 600),
@@ -872,7 +876,8 @@ class _Bar extends StatelessWidget {
           height: (heightFraction * 100).clamp(4.0, 100.0),
           decoration: BoxDecoration(
             color: color,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
+            borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(6)),
           ),
         ),
         const SizedBox(height: 4),
@@ -926,11 +931,12 @@ class _SummaryChip extends StatelessWidget {
   final String value;
   final String label;
   final Color color;
-  const _SummaryChip(
-      {required this.icon,
-      required this.value,
-      required this.label,
-      required this.color});
+  const _SummaryChip({
+    required this.icon,
+    required this.value,
+    required this.label,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -975,7 +981,8 @@ class _ImpactListTile extends StatelessWidget {
       child: ListTile(
         leading: Icon(Icons.warning_amber,
             color: isHigh ? Colors.red : Colors.orange),
-        title: Text('Severity: ${activity.impactSeverity.toStringAsFixed(1)}/10',
+        title: Text(
+            'Severity: ${activity.impactSeverity.toStringAsFixed(1)}/10',
             style: const TextStyle(fontWeight: FontWeight.bold)),
         subtitle: Text(
             '${activity.timestamp.day}/${activity.timestamp.month} at '
@@ -990,7 +997,9 @@ class _ImpactListTile extends StatelessWidget {
           child: Text(
             isHigh ? 'HIGH' : 'MED',
             style: const TextStyle(
-                color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
+                color: Colors.white,
+                fontSize: 11,
+                fontWeight: FontWeight.bold),
           ),
         ),
       ),
@@ -1072,8 +1081,6 @@ class _HistoryTile extends StatelessWidget {
       ),
     );
   }
-
-
 }
 
 // ─── Shared helper widgets ────────────────────────────────────────────────────
@@ -1112,9 +1119,10 @@ class _ErrorCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-          color: Colors.red.shade50, borderRadius: BorderRadius.circular(12)),
-      child: Text('Error: $error',
-          style: const TextStyle(color: Colors.red)),
+          color: Colors.red.shade50,
+          borderRadius: BorderRadius.circular(12)),
+      child:
+          Text('Error: $error', style: const TextStyle(color: Colors.red)),
     );
   }
 }
