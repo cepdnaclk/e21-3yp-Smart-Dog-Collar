@@ -27,4 +27,9 @@ class HealthService {
     _repository = repository;
     debugPrint('Health repository switched');
   }
+
+  Future<List<HealthVitals>> getHealthHistoryForDay(DateTime day) {
+  return _repository.getHealthHistoryForDay(petId, day);
+  }
+
 }
