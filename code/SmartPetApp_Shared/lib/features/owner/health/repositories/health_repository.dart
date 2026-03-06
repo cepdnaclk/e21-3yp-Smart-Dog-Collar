@@ -6,4 +6,5 @@ abstract class HealthRepository {
   
   /// Stream of real-time health vitals from cloud
   Stream<HealthVitals> getHealthVitalsStream(String petId);
+  Future<List<HealthVitals>> getHealthHistoryForDay(String petId, DateTime day);
 }

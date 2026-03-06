@@ -9,15 +9,19 @@ class HealthVitals {
     required this.timestamp,
   });
 
-  factory HealthVitals.fromJson(Map<String, dynamic> json) {
-    return HealthVitals(
-      heartRate: (json['heartRate'] as num?)?.toInt() ?? 0,
-      temperature: (json['temperature'] as num?)?.toDouble() ?? 0.0,
-      timestamp: json['timestamp'] != null 
-          ? DateTime.parse(json['timestamp'].toString()) 
-          : DateTime.now(),
-    );
+factory HealthVitals.fromJson(Map<String, dynamic> json) {
+  String ts = json['timestamp'] as String;
+  // ESP32 uses dashes in time part (e.g. 2026-03-04T13-36-17), fix to valid ISO
+  if (ts.length >= 19 && ts[13] == '-') {
+    ts = ts.substring(0, 11) + ts.substring(11).replaceAll('-', ':');
   }
+
+  return HealthVitals(
+    heartRate: (json['heartRate'] as num).toInt(),
+    temperature: (json['temperature'] as num).toDouble(),
+    timestamp: DateTime.parse(ts),
+  );
+}
 
   Map<String, dynamic> toJson() {
     return {
